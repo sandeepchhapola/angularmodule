@@ -1,0 +1,62 @@
+<!DOCTYPE html >
+<html ng-app="myApp" xmlns="http://www.w3.org/1999/html">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <script src="bower_components/jquery-1.11.3.min/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="app/app.js"></script>
+</head>
+<body ng-controller="HomeCtrl as Home">
+<div class="centre title"><h2>Angular Module and Unit testing demo</h2></div>
+<div class="centre">
+    <div class="ui-widget-content">
+        <label class="floatL width10 align-right"><span>&#8377;</span>{{Home.minRange}}</label>
+        <range-selector users="usersList" min="Home.minRange" max="Home.maxRange"></range-selector>
+        <label class="floatR width10"><span>&#8377;</span>{{Home.maxRange}}</label>
+    </div>
+    <table class="user-list">
+        <tr>
+            <th>Sr.</th>
+            <th>User Name</th>
+            <th>Age</th>
+            <th>Salary</th>
+        </tr>
+        <tr ng-repeat="user in users |orderBy : 'salary' ">
+            <td>{{$index+1}}</td>
+            <td class="align-justify">{{user.name}}</td>
+            <td>{{user.age}}</td>
+            <td><span>&#8377;</span>{{user.salary}}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="centre title">
+    <h4>Search a user by name</h4>
+    <input type="text" class="search-box" ng-model="username" placeholder="Enter name..."/>
+    <input type="button" class="search-button" value="Search By Name" ng-disabled="!username" ng-click="Home.fetchUserByName(username)">
+</div>
+<div class="centre">
+    <table class="user-list">
+        <tr>
+            <th>Sr.</th>
+            <th>User Name</th>
+            <th>Age</th>
+            <th>Salary</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td class="align-justify">{{Home.searchedUser.name}}</td>
+            <td>{{Home.searchedUser.age}}</td>
+            <td><span>&#8377;</span>{{Home.searchedUser.salary}}</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

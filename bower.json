@@ -1,0 +1,11 @@
+{
+  "name": "angular.module",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-resource": "~1.4.0",
+    "jquery": "~2.1.4",
+    "jquery-1.11.3.min": "http://code.jquery.com/jquery-1.11.3.min.js",
+    "jquery-ui": "~1.11.4"
+  }
+}
