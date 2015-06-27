@@ -1,7 +1,7 @@
 'use strict';
 
 (function (angular) {
-    angular.module("myApp", ['ngResource'])
+    angular.module("myApp", ['ngResource', 'ngAnimate'])
         .value('LAST_ACCESSED_USER', {
             name: '',
             age: '',
@@ -18,13 +18,44 @@
             fetchAllUsers: '/app/users/all/v1',
             fetchUserByName: '/app/user/v1/:name'
         })
-        .config(['$provide', function ($provide) {
+        .provider('configData', [function () {
+            var configData = {
+                emailPattern: "[a-z0-9_]*([.][a-z0-9_]+)*([+][0-9]+)*[@][a-z0-9]*[a-z0-9.]+[a-z0-9]*",
+                mobileNumberPattern: "^\\d*$",
+                mobileNumberSize: 10,
+                passwordMinSize: 6,
+                passwordPattern: "^(?=.*[a-z])(?!.*\\s).{6,15}$"
+            };
+            this.$get = function () {
+                return {
+                    configData: configData
+                }
+            };
+            this.addConfigDataValue = function (key, value) {
+                configData[key] = value;
+            };
+            return this
+
+        }])
+        .config(['$provide', 'configDataProvider', function ($provide, configDataProvider) {
+
             $provide.decorator('LAST_ACCESSED_USER', ['$delegate', function ($delegate) {
                 $delegate.name = $delegate.name ? $delegate.name : 'Not Provided';
                 $delegate.age = $delegate.age ? $delegate.age : 'Not Provided';
                 $delegate.salary = $delegate.salary ? $delegate.salary : 0;
                 return $delegate;
-            }])
+            }]);
+
+            var configData = configDataProvider.$get().configData;
+
+            console.log('-----------before addConfigDataValue--------------', configData);
+
+            configDataProvider.addConfigDataValue('usernameMaxSize', 40);
+
+            configData = configDataProvider.$get().configData;
+
+            console.log('-----------after addConfigDataValue--------------', configData);
+
         }])
         .run(['HomeFactory', '$rootScope', '$filter', 'defaultFilterRange', function (HomeFactory, $rootScope, $filter, defaultFilterRange) {
             (function () {
@@ -42,6 +73,25 @@
                 });
             })();
         }])
+        .service('HomeService', ['$resource', 'REQUEST_URL', 'API_URLs', function ($resource, REQUEST_URL, API_URLs) {
+            return {
+                FetchUserByName: $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchUserByName, {'name': '@name'}, {
+                    'fetchUserByName': {
+                        'method': 'GET'
+                    }
+                })
+            }
+        }])
+        .factory('HomeFactory', ['$resource', 'REQUEST_URL', 'API_URLs', function ($resource, REQUEST_URL, API_URLs) {
+            return {
+                FetchAllUsers: $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchAllUsers, {}, {
+                    'fetchAllUsers': {
+                        'method': 'GET',
+                        'isArray': true
+                    }
+                })
+            }
+        }])
         .controller('HomeCtrl', ['HomeService', 'LAST_ACCESSED_USER', function (HomeService, LAST_ACCESSED_USER) {
             var _self = this;
             _self.searchedUser = LAST_ACCESSED_USER;
@@ -57,8 +107,6 @@
                         } else {
                             _self.searchedUser = LAST_ACCESSED_USER;
                         }
-                        console.log('-----------searchedUser--------------', response);
-
                     }, function (error) {
                         _self.searchedUser = null;
                         console.log('-----------Home fetchUserByName error---------------', error);
@@ -107,42 +155,6 @@
             return function (_input, _min, _max) {
                 return (_input > _min && _input < _max) ? _input : null;
             };
-        }])
-        /*.animation('', [function () {
-            return {
-                event: function (elem, done) {
-                    elem.addClass('bigFont');
-                    done();
-                }
-            };
-        }])
-        *//*.provider(['', function () {
-
-         }])*/
-        .service('HomeService', ['$resource', 'REQUEST_URL', 'API_URLs', function ($resource, REQUEST_URL, API_URLs) {
-            return {
-                FetchUserByName: $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchUserByName, {'name': '@name'}, {
-                    'fetchUserByName': {
-                        'method': 'GET'
-                    }
-                })
-            }
-        }])
-        .factory('HomeFactory', ['$resource', 'REQUEST_URL', 'API_URLs', function ($resource, REQUEST_URL, API_URLs) {
-            return {
-                FetchAllUsers: $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchAllUsers, {}, {
-                    'fetchAllUsers': {
-                        'method': 'GET',
-                        'isArray': true
-                    }
-                })
-            }
         }]);
-    /*app.name;
-     app.requires;
-     app._configBlocks;
-     app._invokeQueuelocks;
-     app._runBlocks;
-     */
-
-})(window.angular);
+})
+(window.angular);

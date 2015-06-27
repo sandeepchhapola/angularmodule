@@ -131,7 +131,6 @@ var users = [
     }];
 var bodyParser = require('body-parser');
 var multer = require('multer');
-// Setup server
 var app = express();
 function _define(name, value) {
     Object.defineProperty(global, name, {
@@ -167,9 +166,6 @@ app.get('/app/user/v1/:name', function (req, res) {
     console.log(blue('Searched User: ', JSON.stringify(_user)));
     res.send({data: _user}).end();
 });
-
-
-// Start server
 
 function stopWebServer() {
     server.close(function () {

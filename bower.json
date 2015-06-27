@@ -6,6 +6,7 @@
     "angular-resource": "~1.4.0",
     "jquery": "~2.1.4",
     "jquery-1.11.3.min": "http://code.jquery.com/jquery-1.11.3.min.js",
-    "jquery-ui": "~1.11.4"
+    "jquery-ui": "~1.11.4",
+    "angular-animate": "~1.4.1"
   }
 }

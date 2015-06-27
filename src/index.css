@@ -15,20 +15,17 @@
 
 .ui-widget-content {
     border: 0;
-    width: 500px;
+    width: 600px;
     clear: both;
     display: inline-flex;
 }
 
 table.user-list {
-    width: 500px;
+    width: 600px;
     border: solid 1px #3a8104;
     margin-top: 20px;
-    -webkit-transition: 650ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    -moz-transition: 650ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    -ms-transition: 650ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    -o-transition: 650ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-    transition: 650ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    margin-bottom: 40px;
+
 }
 
 table.user-list tr th {
@@ -81,7 +78,7 @@ table.user-list tr td {
     right: 0;
     padding: 0;
     margin: auto;
-    width: 500px
+    width: 600px
 }
 
 .search-box{
@@ -92,4 +89,78 @@ table.user-list tr td {
 .search-button{
     padding: 6px;
     border: solid 1px #3a8104;
+}
+
+
+.animate {
+    -webkit-transition: 1s linear all;
+    transition: 1s linear all;
+}
+
+.animate-add, .animate-remove {
+    -webkit-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+    opacity:0;
+}
+
+.animate,
+.animate-add.animate-add-active {
+    opacity:1;
+}
+
+.animate-remove.animate-remove-active {
+    opacity:0;
+}
+
+.animate-repeat {
+    list-style:none;
+    -webkit-transition: 1s linear all;
+    transition: 1s linear all;
+}
+
+.animate-repeat.ng-move,
+.animate-repeat.ng-enter,
+.animate-repeat.ng-leave {
+    -webkit-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+}
+
+.animate-repeat.ng-leave.ng-leave-active,
+.animate-repeat.ng-move,
+.animate-repeat.ng-enter {
+    opacity:0;
+}
+
+.animate-repeat.ng-leave,
+.animate-repeat.ng-move.ng-move-active,
+.animate-repeat.ng-enter.ng-enter-active {
+    opacity:1;
+}
+
+/**
+ * Stagger Leave (hide) animation
+ */
+.animate-repeat.ng-leave-stagger {
+    /* this will have a 100ms delay between each successive leave animation */
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+
+    /* in case the stagger doesn't work then these two values
+     must be set to 0 to avoid an accidental CSS inheritance */
+    -webkit-transition-duration: 0s;
+    transition-duration: 0s;
+}
+
+/**
+ * Stagger ENTER ANIMATION
+ */
+.animate-repeat.ng-enter-stagger {
+    /* this will have a 100ms delay between each successive enter animation */
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+
+    /* in case the stagger doesn't work then these two values
+     must be set to 0 to avoid an accidental CSS inheritance */
+    -webkit-transition-duration: 0s;
+    transition-duration: 0s;
 }
