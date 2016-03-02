@@ -81,16 +81,16 @@ table.user-list tr td {
     width: 600px
 }
 
-.search-box{
+.search-box {
     padding: 6px;
     width: 200px;
     border: solid 1px #3a8104;
 }
-.search-button{
+
+.search-button {
     padding: 6px;
     border: solid 1px #3a8104;
 }
-
 
 .animate {
     -webkit-transition: 1s linear all;
@@ -98,22 +98,22 @@ table.user-list tr td {
 }
 
 .animate-add, .animate-remove {
-    -webkit-transition:all linear 0.5s;
-    transition:all linear 0.5s;
-    opacity:0;
+    -webkit-transition: all linear 0.5s;
+    transition: all linear 0.5s;
+    opacity: 0;
 }
 
 .animate,
 .animate-add.animate-add-active {
-    opacity:1;
+    opacity: 1;
 }
 
 .animate-remove.animate-remove-active {
-    opacity:0;
+    opacity: 0;
 }
 
 .animate-repeat {
-    list-style:none;
+    list-style: none;
     -webkit-transition: 1s linear all;
     transition: 1s linear all;
 }
@@ -121,20 +121,20 @@ table.user-list tr td {
 .animate-repeat.ng-move,
 .animate-repeat.ng-enter,
 .animate-repeat.ng-leave {
-    -webkit-transition:all linear 0.5s;
-    transition:all linear 0.5s;
+    -webkit-transition: all linear 0.5s;
+    transition: all linear 0.5s;
 }
 
 .animate-repeat.ng-leave.ng-leave-active,
 .animate-repeat.ng-move,
 .animate-repeat.ng-enter {
-    opacity:0;
+    opacity: 0;
 }
 
 .animate-repeat.ng-leave,
 .animate-repeat.ng-move.ng-move-active,
 .animate-repeat.ng-enter.ng-enter-active {
-    opacity:1;
+    opacity: 1;
 }
 
 /**
@@ -163,4 +163,9 @@ table.user-list tr td {
      must be set to 0 to avoid an accidental CSS inheritance */
     -webkit-transition-duration: 0s;
     transition-duration: 0s;
+}
+
+.focus:hover {
+    height: 25px;
+    width: 26%;
 }

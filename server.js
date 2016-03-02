@@ -56,15 +56,18 @@ var users = [
         name: 'Honey',
         age: '24',
         salary: '24100'
-    }, {
+    },
+    {
         name: 'Honey prathma',
         age: '29',
         salary: '27300'
-    }, {
+    },
+    {
         name: 'Honey dviteeya',
         age: '21',
         salary: '23700'
-    }, {
+    },
+    {
         name: 'Honey triteeya',
         age: '23',
         salary: '24600'
@@ -130,7 +133,6 @@ var users = [
         salary: '24000'
     }];
 var bodyParser = require('body-parser');
-var multer = require('multer');
 var app = express();
 function _define(name, value) {
     Object.defineProperty(global, name, {
@@ -144,7 +146,6 @@ var server = require('http').createServer(app);
 _define('app', app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(multer());
 app.use(express.static(path.resolve(currentDir, argv.dir)));
 app.set('appPath', path.resolve(currentDir, argv.dir));
 //Serve (index.html) file for each route call
@@ -154,17 +155,6 @@ app.route('/').get(function (req, res) {
 
 app.get('/app/users/all/v1', function (req, res) {
     res.send(users).end();
-});
-
-app.get('/app/user/v1/:name', function (req, res) {
-    var _user = null;
-    users.forEach(function (user) {
-        if (user.name === req.params.name) {
-            _user = user;
-        }
-    });
-    console.log(blue('Searched User: ', JSON.stringify(_user)));
-    res.send({data: _user}).end();
 });
 
 function stopWebServer() {

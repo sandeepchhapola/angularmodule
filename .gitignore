@@ -2,6 +2,6 @@ node_modules/
 src/bower_components/
 *.log
 .idea/
-test/
+coverage/
 *.log
 exp

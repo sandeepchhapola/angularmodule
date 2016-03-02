@@ -15,8 +15,7 @@
             apiBaseUrl: 'http://localhost:3000'
         })
         .constant('API_URLs', {
-            fetchAllUsers: '/app/users/all/v1',
-            fetchUserByName: '/app/user/v1/:name'
+            fetchAllUsers: '/app/users/all/v1'
         })
         .provider('configData', [function () {
             var configData = {
@@ -38,7 +37,6 @@
 
         }])
         .config(['$provide', 'configDataProvider', function ($provide, configDataProvider) {
-
             $provide.decorator('LAST_ACCESSED_USER', ['$delegate', function ($delegate) {
                 $delegate.name = $delegate.name ? $delegate.name : 'Not Provided';
                 $delegate.age = $delegate.age ? $delegate.age : 'Not Provided';
@@ -46,53 +44,60 @@
                 return $delegate;
             }]);
 
-            var configData = configDataProvider.$get().configData;
-
-            console.log('-----------before addConfigDataValue--------------', configData);
-
             configDataProvider.addConfigDataValue('usernameMaxSize', 40);
 
-            configData = configDataProvider.$get().configData;
-
-            console.log('-----------after addConfigDataValue--------------', configData);
-
         }])
-        .run(['HomeFactory', '$rootScope', '$filter', 'defaultFilterRange', function (HomeFactory, $rootScope, $filter, defaultFilterRange) {
-            (function () {
-                HomeFactory.FetchAllUsers.fetchAllUsers(function (response) {
-                    $rootScope.usersList = response;
-                    $rootScope.users = [];
-                    $rootScope.usersList.forEach(function (user) {
-                        var filterUser = $filter('between')(user.salary, defaultFilterRange.min, defaultFilterRange.max);
-                        if (filterUser) {
-                            $rootScope.users.push(user);
-                        }
-                    });
-                }, function (error) {
-                    console.log('-----------Home fetchAllUsers error---------------', error);
+        .run(['HomeService', '$rootScope', '$filter', 'defaultFilterRange', function (HomeService, $rootScope, $filter, defaultFilterRange) {
+            HomeService.fetchAllUsers(function (response) {
+                $rootScope.usersList = response;
+                $rootScope.users = [];
+                $rootScope.usersList.forEach(function (user) {
+                    var filterUser = $filter('between')(user.salary, defaultFilterRange.min, defaultFilterRange.max);
+                    if (filterUser) {
+                        $rootScope.users.push(user);
+                    }
                 });
-            })();
+            }, function (error) {
+                console.log('----------- error---------------', error);
+            });
+
         }])
         .service('HomeService', ['$resource', 'REQUEST_URL', 'API_URLs', function ($resource, REQUEST_URL, API_URLs) {
-            return {
-                FetchUserByName: $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchUserByName, {'name': '@name'}, {
-                    'fetchUserByName': {
-                        'method': 'GET'
+            return $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchAllUsers, {}, {
+                'fetchAllUsers': {
+                    'method': 'GET',
+                    'isArray': true
+                }
+            });
+        }])
+        .factory('HomeFactory', ['$q', '$rootScope', function ($q, $rootScope) {
+            var searchUserByName = function (_name) {
+                var deferred = $q.defer();
+                if ($rootScope.usersList.length > 0) {
+                    var _user = null,
+                        length = $rootScope.usersList.length;
+                    for (var i = 0; i < length; i++) {
+                        if (_name === $rootScope.usersList[i].name) {
+                            _user = $rootScope.usersList[i];
+                            break;
+                        }
                     }
-                })
+                    if (_user) {
+                        deferred.resolve({data: _user});
+                    } else {
+                        deferred.reject({
+                            message: 'User not found.'
+                        });
+                    }
+
+                }
+                return deferred.promise;
+            };
+            return {
+                searchUserByName: searchUserByName
             }
         }])
-        .factory('HomeFactory', ['$resource', 'REQUEST_URL', 'API_URLs', function ($resource, REQUEST_URL, API_URLs) {
-            return {
-                FetchAllUsers: $resource(REQUEST_URL.apiBaseUrl + API_URLs.fetchAllUsers, {}, {
-                    'fetchAllUsers': {
-                        'method': 'GET',
-                        'isArray': true
-                    }
-                })
-            }
-        }])
-        .controller('HomeCtrl', ['HomeService', 'LAST_ACCESSED_USER', function (HomeService, LAST_ACCESSED_USER) {
+        .controller('HomeCtrl', ['HomeFactory', 'LAST_ACCESSED_USER', function (HomeFactory, LAST_ACCESSED_USER) {
             var _self = this;
             _self.searchedUser = LAST_ACCESSED_USER;
             _self.minRange = 20000;
@@ -101,16 +106,16 @@
                 if (!_name) {
                     alert('Name field must be required.');
                 } else {
-                    HomeService.FetchUserByName.fetchUserByName({'name': _name}, function (response) {
-                        if (response.data) {
-                            _self.searchedUser = response.data;
-                        } else {
-                            _self.searchedUser = LAST_ACCESSED_USER;
-                        }
-                    }, function (error) {
-                        _self.searchedUser = null;
-                        console.log('-----------Home fetchUserByName error---------------', error);
-                    });
+                    HomeFactory.searchUserByName(_name).then(function (result) {
+                            if (result.data) {
+                                _self.searchedUser = result.data;
+                            }
+                        },
+                        function (error) {
+                            if (error) {
+                                _self.searchedUser = LAST_ACCESSED_USER;
+                            }
+                        });
                 }
             };
         }])
@@ -155,6 +160,6 @@
             return function (_input, _min, _max) {
                 return (_input > _min && _input < _max) ? _input : null;
             };
-        }]);
+        }])
 })
 (window.angular);
